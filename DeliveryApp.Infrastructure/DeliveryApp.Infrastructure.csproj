@@ -30,13 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DeliveryApp.Core\DeliveryApp.Core.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="Adapters\Grpc\GeoService\grpc.proto"/>
-        <None Remove="Adapters\Kafka\BasketConfirmed\Contract.proto"/>
-        <None Remove="Adapters\Grpc\GeoService\Contract.proto"/>
+        <ProjectReference Include="..\DeliveryApp.Core\DeliveryApp.Core.csproj" />
     </ItemGroup>
 
 </Project>
