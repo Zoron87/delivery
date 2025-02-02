@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.ExceptionServices;
 
 namespace DeliveryApp.Core.Domain.SharedKernel
 {
@@ -8,6 +7,16 @@ namespace DeliveryApp.Core.Domain.SharedKernel
     {
         public int X { get; }
         public int Y { get; }
+        
+        /// <summary>
+        /// Минимально возможная локация
+        /// </summary>
+        public static readonly Location MinPoint = new(1,1);
+
+        /// <summary>
+        /// Максимально возможная локация
+        /// </summary>
+        public static readonly Location MaxPoint = new(10, 10);
 
         [ExcludeFromCodeCoverage]
         private Location(){ }
@@ -26,8 +35,8 @@ namespace DeliveryApp.Core.Domain.SharedKernel
         /// <returns></returns>
         public static Result<Location> Create(int x, int y)
         {
-            if (x < 1 || x > 10) return Result.Failure<Location>($"Значение '{nameof(x)}' должно быть в диапазоне от 1 до 10 включительно.");
-            if (y < 1 || y > 10) return Result.Failure<Location>($"Значение '{nameof(y)}' должно быть в диапазоне от 1 до 10 включительно.");
+            if (x < MinPoint.X || x > MaxPoint.X) return Result.Failure<Location>($"Значение '{nameof(x)}' должно быть в диапазоне от 1 до 10 включительно.");
+            if (y < MinPoint.X || y > MaxPoint.Y) return Result.Failure<Location>($"Значение '{nameof(y)}' должно быть в диапазоне от 1 до 10 включительно.");
 
             return new Location(x, y);
         }
@@ -46,9 +55,9 @@ namespace DeliveryApp.Core.Domain.SharedKernel
         /// Создание случайного местоположения для тестирования
         /// </summary>
         /// <returns></returns>
-        public static Location CreateRandomPoint()
+        public static Result<Location> CreateRandomPoint()
         {
-            return new Location(Random.Shared.Next(1,11), Random.Shared.Next(1, 11));
+            return new Location(Random.Shared.Next(MinPoint.X,MaxPoint.X), Random.Shared.Next(MinPoint.Y, MaxPoint.Y));
         }
 
         [ExcludeFromCodeCoverage]

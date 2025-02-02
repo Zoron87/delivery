@@ -108,5 +108,19 @@ namespace DeliveryApp.UnitTests.Domain.Model.SharedKernel
             //Assert
             result.Should().Be(5);
         }
+
+        [Fact]
+        public void CanCreateRandomLocation()
+        {
+            //Arrange
+
+            //Act
+            var location = Location.CreateRandomPoint();
+
+            //Assert
+            location.IsSuccess.Should().BeTrue();
+            location.Value.X.Should().BeGreaterThanOrEqualTo(1).And.BeLessThanOrEqualTo(10);
+            location.Value.Y.Should().BeGreaterThanOrEqualTo(1).And.BeLessThanOrEqualTo(10);
+        }
     }
 }
