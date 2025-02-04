@@ -55,9 +55,9 @@ namespace DeliveryApp.Core.Domain.SharedKernel
         /// Создание случайного местоположения для тестирования
         /// </summary>
         /// <returns></returns>
-        public static Result<Location> CreateRandomPoint()
+        public static Location CreateRandomPoint()
         {
-            return new Location(Random.Shared.Next(MinPoint.X,MaxPoint.X), Random.Shared.Next(MinPoint.Y, MaxPoint.Y));
+            return new Location(Random.Shared.Next(MinPoint.X,MaxPoint.X+1), Random.Shared.Next(MinPoint.Y, MaxPoint.Y+1));
         }
 
         [ExcludeFromCodeCoverage]
