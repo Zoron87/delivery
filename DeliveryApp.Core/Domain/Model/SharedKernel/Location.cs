@@ -1,17 +1,17 @@
 ﻿using CSharpFunctionalExtensions;
 using System.Diagnostics.CodeAnalysis;
 
-namespace DeliveryApp.Core.Domain.SharedKernel
+namespace DeliveryApp.Core.Domain.Model.SharedKernel
 {
     public sealed class Location : ValueObject
     {
         public int X { get; }
         public int Y { get; }
-        
+
         /// <summary>
         /// Минимально возможная локация
         /// </summary>
-        public static readonly Location MinPoint = new(1,1);
+        public static readonly Location MinPoint = new(1, 1);
 
         /// <summary>
         /// Максимально возможная локация
@@ -19,9 +19,9 @@ namespace DeliveryApp.Core.Domain.SharedKernel
         public static readonly Location MaxPoint = new(10, 10);
 
         [ExcludeFromCodeCoverage]
-        private Location(){ }
+        private Location() { }
 
-        private Location (int x, int y) : this()
+        private Location(int x, int y) : this()
         {
             X = x;
             Y = y;
@@ -57,7 +57,7 @@ namespace DeliveryApp.Core.Domain.SharedKernel
         /// <returns></returns>
         public static Location CreateRandomPoint()
         {
-            return new Location(Random.Shared.Next(MinPoint.X,MaxPoint.X+1), Random.Shared.Next(MinPoint.Y, MaxPoint.Y+1));
+            return new Location(Random.Shared.Next(MinPoint.X, MaxPoint.X + 1), Random.Shared.Next(MinPoint.Y, MaxPoint.Y + 1));
         }
 
         [ExcludeFromCodeCoverage]
