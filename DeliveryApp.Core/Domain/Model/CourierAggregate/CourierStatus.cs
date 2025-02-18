@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace DeliveryApp.Core.Domain.Model.CourierAggregate
 {
     /// <summary>
-    ///     Статус корзины
+    /// Статус курьера
     /// </summary>
     public class CourierStatus : ValueObject
     {
@@ -15,9 +15,7 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
         ///     Ctr
         /// </summary>
         [ExcludeFromCodeCoverage]
-        private CourierStatus()
-        {
-        }
+        private CourierStatus() { }
 
         /// <summary>
         ///     Ctr
@@ -37,6 +35,11 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
         {
             yield return Name;
         }
-    }
 
+        public static IEnumerable<CourierStatus> List()
+        {
+            yield return Free;
+            yield return Busy;
+        }
+    }
 }
