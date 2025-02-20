@@ -23,21 +23,14 @@ namespace DeliveryApp.Infrastructure.Adapters.Postgres.Repositories
             return Result.Success<Error>();
         }
 
-        public async Task<IEnumerable<Order>> GetAllCreatedAsync()
-        {
-            return await _dbContext.Orders.Where(o => o.Status.Name == OrderStatus.Created.Name).ToListAsync();
-        }
+        public async Task<ICollection<Order>> GetAllCreatedAsync() =>
+            await _dbContext.Orders.Where(o => o.Status.Name == OrderStatus.Created.Name).ToListAsync();
 
-        public async Task<IEnumerable<Order>> GetAllAssignedAsync()
-        {
-            var test = await _dbContext.Orders.Where(o => o.Status.Name == OrderStatus.Assigned.Name).ToListAsync();
-            return test;
-        }
+        public async Task<ICollection<Order>> GetAllAssignedAsync() =>
+            await _dbContext.Orders.Where(o => o.Status.Name == OrderStatus.Assigned.Name).ToListAsync();
 
-        public async Task<Result<Order, Error>> GetByIdAsync(Guid orderId)
-        {
-            return await _dbContext.Orders.SingleOrDefaultAsync(o => o.Id == orderId);
-        }
+        public async Task<Result<Order, Error>> GetByIdAsync(Guid orderId) =>
+            await _dbContext.Orders.SingleOrDefaultAsync(o => o.Id == orderId);
 
         public UnitResult<Error> Update(Order order)
         {

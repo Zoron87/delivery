@@ -97,7 +97,6 @@ namespace DeliveryApp.IntegrationTests.Repositories
 
             //Assert
             var courierFromDb = await courierRepository.GetByIdAsync(courier.Id);
-            courierFromDb.IsSuccess.Should().BeTrue();
             courier.Should().BeEquivalentTo(courierFromDb.Value);
         }
 
@@ -115,7 +114,6 @@ namespace DeliveryApp.IntegrationTests.Repositories
 
             //Asset
             var courierFromDb = await courierRepository.GetByIdAsync(courier.Id);
-            courierFromDb.IsSuccess.Should().BeTrue();
             courier.Should().BeEquivalentTo(courierFromDb.Value);
         }
     }

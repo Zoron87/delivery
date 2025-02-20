@@ -23,15 +23,11 @@ namespace DeliveryApp.Infrastructure.Adapters.Postgres.Repositories
             return UnitResult.Success<Error>(); 
         }
 
-        public async Task<IEnumerable<Courier>> GetAllFreeAsync()
-        {
-            return await _dbContext.Couriers.Include(c => c.Transport).Where(c => c.Status.Name == CourierStatus.Free.Name).ToListAsync();
-        }
+        public async Task<ICollection<Courier>> GetAllFreeAsync() =>
+            await _dbContext.Couriers.Include(c => c.Transport).Where(c => c.Status.Name == CourierStatus.Free.Name).ToListAsync();
 
-        public async Task<Result<Courier, Error>> GetByIdAsync(Guid courierId)
-        {
-            return await _dbContext.Couriers.Include(c => c.Transport).Where(c => c.Id == courierId).SingleOrDefaultAsync();
-        }
+        public async Task<Maybe<Courier>> GetByIdAsync(Guid courierId) =>
+            await _dbContext.Couriers.Include(c => c.Transport).Where(c => c.Id == courierId).SingleOrDefaultAsync(); 
 
         public UnitResult<Error> Update(Courier courier)
         {
