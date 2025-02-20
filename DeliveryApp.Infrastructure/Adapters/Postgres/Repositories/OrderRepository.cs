@@ -29,7 +29,7 @@ namespace DeliveryApp.Infrastructure.Adapters.Postgres.Repositories
         public async Task<ICollection<Order>> GetAllAssignedAsync() =>
             await _dbContext.Orders.Where(o => o.Status.Name == OrderStatus.Assigned.Name).ToListAsync();
 
-        public async Task<Result<Order, Error>> GetByIdAsync(Guid orderId) =>
+        public async Task<Maybe<Order>> GetByIdAsync(Guid orderId) =>
             await _dbContext.Orders.SingleOrDefaultAsync(o => o.Id == orderId);
 
         public UnitResult<Error> Update(Order order)
