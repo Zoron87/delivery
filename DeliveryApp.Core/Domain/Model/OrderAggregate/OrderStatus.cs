@@ -38,5 +38,12 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
         {
             yield return Name;
         }
+
+        public static IEnumerable<OrderStatus> List()
+        {
+            yield return Created;
+            yield return Assigned;
+            yield return Completed;
+        }
     }
 }

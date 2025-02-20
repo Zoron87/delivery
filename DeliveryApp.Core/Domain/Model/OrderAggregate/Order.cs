@@ -14,7 +14,7 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
         /// <summary>
         /// Адрес заказа
         /// </summary>
-        public Location Location { get; }
+        public Location Location { get; private set; }
 
         /// <summary>
         /// Статус заказа

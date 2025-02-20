@@ -13,12 +13,12 @@ namespace DeliveryApp.Core.Domain.Model.CourierAggregate
         /// <summary>
         /// Имя курьера
         /// </summary>
-        public string Name { get; }
+        public string Name { get; private set; }
         
         /// <summary>
         /// Транспорт курьера
         /// </summary>
-        public Transport Transport { get; }
+        public Transport Transport { get; private set; }
 
         /// <summary>
         /// Текущее местоположение курьера
