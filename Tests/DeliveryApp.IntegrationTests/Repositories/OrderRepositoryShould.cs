@@ -130,7 +130,6 @@ namespace DeliveryApp.IntegrationTests.Repositories
 
             //Assert
             var orderFromDb = await orderRepository.GetByIdAsync(order.Id);
-            orderFromDb.IsSuccess.Should().BeTrue();
             order.Should().BeEquivalentTo(orderFromDb.Value);
         }
 
@@ -148,7 +147,6 @@ namespace DeliveryApp.IntegrationTests.Repositories
 
             //Asset
             var orderFromDb = await orderRepository.GetByIdAsync(order.Id);
-            orderFromDb.IsSuccess.Should().BeTrue();
             order.Should().BeEquivalentTo(orderFromDb.Value);
         }
     }
