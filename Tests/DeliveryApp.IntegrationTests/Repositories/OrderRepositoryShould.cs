@@ -124,7 +124,7 @@ namespace DeliveryApp.IntegrationTests.Repositories
             await unitOfWork.SaveChangesAsync();
 
             // Act
-            order.Complete();
+            order.Completed();
             orderRepository.Update(order);
             await unitOfWork.SaveChangesAsync();
 
