@@ -67,7 +67,7 @@ namespace DeliveryApp.UnitTests.Domain.Model.OrderAggregate
             order.AssignCourier(courier);
 
             //Act
-            var result = order.Complete();
+            var result = order.Completed();
 
             //Assert
             result.IsSuccess.Should().BeTrue();
