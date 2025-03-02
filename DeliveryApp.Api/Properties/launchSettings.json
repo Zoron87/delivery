@@ -3,7 +3,7 @@
   "profiles": {
     "DeliveryApp": {
       "commandName": "Project",
-      "launchBrowser": false,
+      "launchBrowser": true,
       "applicationUrl": "http://0.0.0.0:8082",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

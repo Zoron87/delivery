@@ -1,16 +1,22 @@
+using Api.Filters;
+using Api.OpenApi;
 using CSharpFunctionalExtensions;
 using DeliveryApp.Api;
+using DeliveryApp.Api.Adapters.BackgroundJobs;
 using DeliveryApp.Core.Application.Commands.AssignCourier;
 using DeliveryApp.Core.Application.Commands.CreateOrder;
 using DeliveryApp.Core.Application.Commands.MoveCouriers;
 using DeliveryApp.Core.Application.Queries.GetCouriers;
 using DeliveryApp.Core.Application.Queries.GetCreatedAndAssignedOrders;
 using DeliveryApp.Core.Domain.Services;
+using DeliveryApp.Core.Ports;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
+using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Primitives;
+using Quartz;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +37,8 @@ builder.Services.AddCors(options =>
 // Configuration
 builder.Services.ConfigureOptions<SettingsSetup>();
 builder.Services.AddTransient<IDispatchService, DispatchService>();
+builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+builder.Services.AddTransient<ICourierRepository, CourierRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var connectionString = builder.Configuration["CONNECTION_STRING"];
@@ -59,11 +67,80 @@ builder.Services.AddTransient<IRequestHandler<GetCreatedAndAssignedOrdersQuery, 
 builder.Services.AddTransient<IRequestHandler<GetCouriersQuery, GetCourierResponse>>(_ =>
     new GetCouriersQueryHandler(connectionString));
 
+// CRON Jobs
+builder.Services.AddQuartz(configure =>
+{
+    var assignOrdersJobKey = new JobKey(nameof(AssignOrdersJob));
+    var moveCouriersJobKey = new JobKey(nameof(MoveCouriersJob));
+    configure
+        .AddJob<AssignOrdersJob>(assignOrdersJobKey)
+        .AddTrigger(
+            trigger => trigger.ForJob(assignOrdersJobKey)
+                .WithSimpleSchedule(
+                    schedule => schedule.WithIntervalInSeconds(1)
+                        .RepeatForever()))
+        .AddJob<MoveCouriersJob>(moveCouriersJobKey)
+        .AddTrigger(
+            trigger => trigger.ForJob(moveCouriersJobKey)
+                .WithSimpleSchedule(
+                    schedule => schedule.WithIntervalInSeconds(2)
+                        .RepeatForever()));
+    configure.UseMicrosoftDependencyInjectionJobFactory();
+});
 
+builder.Services.AddQuartzHostedService();
+
+
+// Swagger
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("1.0.0", new OpenApiInfo
+    {
+        Title = "Basket Service",
+        Description = "Отвечает за формирование корзины и оформление заказа",
+        Contact = new OpenApiContact
+        {
+            Name = "Kirill Vetchinkin",
+            Url = new Uri("https://microarch.ru"),
+            Email = "info@microarch.ru"
+        }
+    });
+    options.CustomSchemaIds(type => type.FriendlyId(true));
+    options.IncludeXmlComments(
+        $"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{Assembly.GetEntryAssembly()?.GetName().Name}.xml");
+    options.DocumentFilter<BasePathFilter>("");
+    options.OperationFilter<GeneratePathParamsValidationFilter>();
+});
+builder.Services.AddSwaggerGenNewtonsoftSupport();
+builder.Services.AddControllers(); 
 
 var app = builder.Build();
 
 // -----------------------------------
+
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+    app.UseDeveloperExceptionPage();
+else
+    app.UseHsts();
+
+app.UseHealthChecks("/health");
+app.UseRouting();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.UseSwagger(c => { c.RouteTemplate = "openapi/{documentName}/openapi.json"; })
+    .UseSwaggerUI(options =>
+    {
+        options.RoutePrefix = "openapi";
+        options.SwaggerEndpoint("/openapi/1.0.0/openapi.json", "Swagger Basket Service");
+        options.RoutePrefix = string.Empty;
+        options.SwaggerEndpoint("/openapi-original.json", "Swagger Basket Service");
+    });
+
+app.UseCors();
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();

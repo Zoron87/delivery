@@ -18,32 +18,20 @@ public class GetCouriersQueryHandler : IRequestHandler<GetCouriersQuery, GetCour
         using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
 
-        var result = await connection.QueryAsync<CourierDTO>(
-            @"SELECT id, name, location_x, location_y, status, transport_id FROM public.couriers"
-            , cancellationToken);
+        var result = await connection.QueryAsync<CourierDTO, LocationDTO, CourierDTO>(
+            @"SELECT id, name, transport_id as ""TransportId"", location_x AS ""X"", location_y AS ""Y"" 
+              FROM public.couriers"
+            , 
+            (courier, location) =>
+            {
+                courier.Location = location;
+                return courier;
+            },
+        splitOn: "X");
 
         if (result.AsList().Count == 0)
             return null;
 
-        var couriers = new List<CourierDTO>();
-
-        couriers = result.Select(item => MapToCourier(item)).ToList();
-
-        return new GetCourierResponse(couriers);
+        return new GetCourierResponse(result.ToList());
     }
-
-    private CourierDTO MapToCourier(CourierDTO item)
-    {
-        var location = new LocationDTO { X = item.Location.X, Y = item.Location.Y };
-
-        var courier = new CourierDTO
-        {
-            Id = item.Id,
-            Name = item.Name,
-            Location = location,
-            TransportId = item.TransportId,
-        };
-        return courier;
-    }
-
 }

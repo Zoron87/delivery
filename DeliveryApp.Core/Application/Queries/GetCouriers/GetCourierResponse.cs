@@ -23,14 +23,14 @@ public class CourierDTO
     public string Name { get; set; }
 
     /// <summary>
-    ///  Геопозиция (X,Y)
-    /// </summary>
-    public LocationDTO Location { get; set; }
-
-    /// <summary>
     ///     Вид транспорта
     /// </summary>
     public int TransportId { get; set; }
+
+    /// <summary>
+    ///  Геопозиция (X,Y)
+    /// </summary>
+    public LocationDTO Location { get; set; } = new();
 }
 
 public class LocationDTO
