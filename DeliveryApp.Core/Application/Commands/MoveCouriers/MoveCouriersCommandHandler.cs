@@ -23,7 +23,7 @@ public class MoveCouriersCommandHandler : IRequestHandler<MoveCouriersCommand, U
         {
             if (order.CourierId == null) return GeneralErrors.NotFound();
 
-            var currentCourierResult = await _courierRepository.GetByIdAsync(order.Id);
+            var currentCourierResult = await _courierRepository.GetByIdAsync(order.CourierId.Value);
             if (currentCourierResult == null) return GeneralErrors.NotFound();
             var currentCourier = currentCourierResult.Value;
 
