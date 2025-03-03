@@ -47,7 +47,7 @@ namespace DeliveryApp.Api.Adapters.Http
             var GetCreatedAndAssignedOrdersQuery = new GetCreatedAndAssignedOrdersQuery();
             var result = await _mediator.Send(GetCreatedAndAssignedOrdersQuery);
 
-            if (result == null) NotFound();
+            if (result == null) return NotFound();
             var order = result.Orders.Select(o => new OrderDTO
             {
                 Id = o.Id,

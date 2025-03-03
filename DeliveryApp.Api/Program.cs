@@ -10,6 +10,7 @@ using DeliveryApp.Core.Application.Queries.GetCouriers;
 using DeliveryApp.Core.Application.Queries.GetCreatedAndAssignedOrders;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Core.Ports;
+using DeliveryApp.Infrastructure.Adapters.Grpc.GeoService;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
@@ -40,6 +41,9 @@ builder.Services.AddTransient<IDispatchService, DispatchService>();
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 builder.Services.AddTransient<ICourierRepository, CourierRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// gRPC
+builder.Services.AddTransient<IGeoClient, GeoClient>();
+
 
 var connectionString = builder.Configuration["CONNECTION_STRING"];
 
