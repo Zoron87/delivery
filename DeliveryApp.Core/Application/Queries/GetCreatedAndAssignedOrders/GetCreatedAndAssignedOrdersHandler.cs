@@ -20,28 +20,22 @@ public class GetCreatedAndAssignedOrdersHandler : IRequestHandler<GetCreatedAndA
         using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
 
-        var result = await connection.QueryAsync<OrderDTO>(
-            @"SELECT id, courier_id, location_x, location_y, status FROM public.orders WHERE status = ANY(@statuses);",
-            new { statuses = new[] { OrderStatus.Created.Name, OrderStatus.Assigned.Name } });
+        var result = await connection.QueryAsync<OrderDTO, LocationDTO, OrderDTO>
+         (
+            @"SELECT id, courier_id, status, location_x AS ""X"", location_y as ""Y"" FROM public.orders WHERE status = ANY(@statuses);",
+
+            (order, location) =>
+            {
+                order.Location = location;
+                return order;
+            },
+            splitOn: "X",
+            param: new { statuses = new[] { OrderStatus.Created.Name, OrderStatus.Assigned.Name } }
+         );
 
         if (result.AsList().Count == 0)
             return null;
 
-        var orders = new List<OrderDTO>();
-        foreach (var item in result) orders.Add(MapToOrder(item));
-
         return new GetCreatedAndAssignedOrdersResponse(result.ToList());
-    }
-
-    private OrderDTO MapToOrder(OrderDTO item)
-    {
-        var location = new LocationDTO { X = item.Location.X, Y = item.Location.Y };
-
-        var order = new OrderDTO
-        {
-            Id = item.Id,
-            Location = location,
-        };
-        return order;
     }
 }
