@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using DeliveryApp.Core.Domain.Model.OrderAggregate;
-using DeliveryApp.Core.Domain.Model.SharedKernel;
 using DeliveryApp.Core.Ports;
 using MediatR;
 using Primitives;
@@ -10,18 +9,21 @@ public sealed class CreateOrderCommandHandler : IRequestHandler<CreateOrderComma
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IGeoClient _geoClient;
 
-    public CreateOrderCommandHandler(IOrderRepository orderRepository, IUnitOfWork unitOfWork)
+    public CreateOrderCommandHandler(IOrderRepository orderRepository, IUnitOfWork unitOfWork, IGeoClient geoClient)
     {
         _orderRepository = orderRepository;
         _unitOfWork = unitOfWork;
+        _geoClient = geoClient;
     }
     public async Task<UnitResult<Error>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         var order = await _orderRepository.GetByIdAsync(request.BasketId);
         if (order != null) return UnitResult.Success<Error>();
 
-        var currentOrder = Order.Create(request.BasketId, Location.CreateRandomPoint());
+        var streetOrder = await _geoClient.GetGeolocationAsync(request.Street);
+        var currentOrder = Order.Create(request.BasketId, streetOrder);
         if (currentOrder.IsFailure) return currentOrder.Error;
 
         await _orderRepository.AddAsync(currentOrder.Value);

@@ -15,10 +15,12 @@ public class CreateOrderCommandShould
 {
     private readonly IOrderRepository _orderRepositoryMock;
     private readonly IUnitOfWork _unitOfWorkMock;
-    public CreateOrderCommandShould()
+    private readonly IGeoClient _geoClient;
+    public CreateOrderCommandShould(IGeoClient geoClient)
     {
         _orderRepositoryMock = Substitute.For<IOrderRepository>();
         _unitOfWorkMock = Substitute.For<IUnitOfWork>();
+        _geoClient = geoClient;
     }
 
     private Order ExistedOrder()
@@ -36,7 +38,7 @@ public class CreateOrderCommandShould
 
         //Act
         var command = new CreateOrderCommand(Guid.NewGuid(), "Test Street");
-        var handler = new CreateOrderCommandHandler(_orderRepositoryMock, _unitOfWorkMock);
+        var handler = new CreateOrderCommandHandler(_orderRepositoryMock, _unitOfWorkMock, _geoClient);
         var result = await handler.Handle(command, new CancellationToken());
 
         // Assert
