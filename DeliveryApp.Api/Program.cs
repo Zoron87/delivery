@@ -3,6 +3,7 @@ using Api.OpenApi;
 using CSharpFunctionalExtensions;
 using DeliveryApp.Api;
 using DeliveryApp.Api.Adapters.BackgroundJobs;
+using DeliveryApp.Api.Adapters.Kafka.BasketConfirmed;
 using DeliveryApp.Core.Application.Commands.AssignCourier;
 using DeliveryApp.Core.Application.Commands.CreateOrder;
 using DeliveryApp.Core.Application.Commands.MoveCouriers;
@@ -43,7 +44,6 @@ builder.Services.AddTransient<ICourierRepository, CourierRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // gRPC
 builder.Services.AddTransient<IGeoClient, GeoClient>();
-
 
 var connectionString = builder.Configuration["CONNECTION_STRING"];
 
@@ -94,6 +94,14 @@ builder.Services.AddQuartz(configure =>
 
 builder.Services.AddQuartzHostedService();
 
+
+// Message Broker Consumer
+builder.Services.Configure<HostOptions>(options =>
+{
+    options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+    options.ShutdownTimeout = TimeSpan.FromSeconds(30);
+});
+builder.Services.AddHostedService<ConsumerService>();
 
 // Swagger
 builder.Services.AddSwaggerGen(options =>

@@ -44,4 +44,12 @@
         <ProjectReference Include="..\DeliveryApp.Core\DeliveryApp.Core.csproj" />
         <ProjectReference Include="..\DeliveryApp.Infrastructure\DeliveryApp.Infrastructure.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <Protobuf Include="Adapters\Kafka\BasketConfirmed\grpc.proto" GrpcServices=" " />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Adapters\Kafka\BasketConfirmed\Consumer.cs">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Compile>
+    </ItemGroup>
 </Project>
