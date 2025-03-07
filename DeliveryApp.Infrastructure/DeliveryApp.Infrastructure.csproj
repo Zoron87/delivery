@@ -31,8 +31,12 @@
 
 	<ItemGroup>
 		<None Remove="Adapters\Grpc\GeoService\grpc.proto" />
+		<None Remove="Adapters\Kafka\OrderStatusChanged\Grpc.proto" />
 		<Protobuf Include="Adapters\Grpc\GeoService\grpc.proto" GrpcServices="Client">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Protobuf>
+		<Protobuf Include="Adapters\Kafka\OrderStatusChanged\Grpc.proto">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Protobuf>
 	</ItemGroup>
 

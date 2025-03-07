@@ -6,12 +6,15 @@ using DeliveryApp.Api.Adapters.BackgroundJobs;
 using DeliveryApp.Api.Adapters.Kafka.BasketConfirmed;
 using DeliveryApp.Core.Application.Commands.AssignCourier;
 using DeliveryApp.Core.Application.Commands.CreateOrder;
+using DeliveryApp.Core.Application.Commands.DomainEventHandlers;
 using DeliveryApp.Core.Application.Commands.MoveCouriers;
 using DeliveryApp.Core.Application.Queries.GetCouriers;
 using DeliveryApp.Core.Application.Queries.GetCreatedAndAssignedOrders;
+using DeliveryApp.Core.Domain.Model.OrderAggregate.DomainEvents;
 using DeliveryApp.Core.Domain.Services;
 using DeliveryApp.Core.Ports;
 using DeliveryApp.Infrastructure.Adapters.Grpc.GeoService;
+using DeliveryApp.Infrastructure.Adapters.Kafka.OrderStatusChanged;
 using DeliveryApp.Infrastructure.Adapters.Postgres;
 using DeliveryApp.Infrastructure.Adapters.Postgres.Repositories;
 using MediatR;
@@ -102,6 +105,13 @@ builder.Services.Configure<HostOptions>(options =>
     options.ShutdownTimeout = TimeSpan.FromSeconds(30);
 });
 builder.Services.AddHostedService<ConsumerService>();
+
+// Domain Event Handlers
+builder.Services.AddTransient<INotificationHandler<OrderStatusChangedDomainEvent>, OrderStatusChangedDomainEventHandler>();
+
+// Message Broker Producer
+builder.Services.AddTransient<IMessageBusProducer, Producer>();
+
 
 // Swagger
 builder.Services.AddSwaggerGen(options =>
