@@ -83,7 +83,7 @@ namespace DeliveryApp.Core.Domain.Model.OrderAggregate
                 Status = OrderStatus.Completed;
             else Errors.CantCompleteNotAssignOrder();
 
-            RaiseDomainEvent(new OrderStatusChangedDomainEvent(this));
+            RaiseDomainEvent(new OrderStatusChangedDomainEvent(Id, Status.Name));
 
             return UnitResult.Success<Error>();
         }

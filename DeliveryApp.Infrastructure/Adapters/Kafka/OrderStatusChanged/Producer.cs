@@ -31,8 +31,8 @@ namespace DeliveryApp.Infrastructure.Adapters.Kafka.OrderStatusChanged
             // Перекладываем данные из DomainEvent в IntergrationEvent
             var orderStatusConfirmedIntegrationEvent = new OrderStatusChangedIntegrationEvent
             {
-                OrderId = notification.order.Id.ToString(),
-                OrderStatus = notification.order.Status.Name.ToEnum<OrderStatus>()
+                OrderId = notification.Id.ToString(),
+                OrderStatus = notification.Status.ToEnum<OrderStatus>()
             };
 
             // Создаем сообщение для Kafka
