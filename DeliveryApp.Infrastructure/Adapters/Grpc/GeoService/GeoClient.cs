@@ -55,7 +55,7 @@ public class GeoClient : IGeoClient
         var reply = await client.GetGeolocationAsync(new GetGeolocationRequest
         {
             Street = street
-        }, null, DateTime.UtcNow.AddSeconds(2), cancellationToken);
+        }, null, DateTime.UtcNow.AddSeconds(3), cancellationToken);
 
         var locationCreateRandomResult =
             Location.Create(reply.Location.X, reply.Location.Y);

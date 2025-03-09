@@ -1,4 +1,5 @@
-﻿using DeliveryApp.Core.Domain.Model.CourierAggregate;
+﻿using BasketApp.Infrastructure.Adapters.Postgres.EntityConfigurations.Outbox;
+using DeliveryApp.Core.Domain.Model.CourierAggregate;
 using DeliveryApp.Core.Domain.Model.OrderAggregate;
 using DeliveryApp.Infrastructure.Adapters.Postgres.EntityConfigurations.CourierAggregate;
 using DeliveryApp.Infrastructure.Adapters.Postgres.EntityConfigurations.OrderAggregate;
@@ -14,6 +15,7 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Order> Orders { get; set; }
     public DbSet<Courier> Couriers { get; set; }
+    public DbSet<Courier> OutboxMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,6 +23,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfiguration(new OrderEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new CourierEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new TransportEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new OutboxEntityTypeConfiguration());
 
         modelBuilder.Entity<Transport>(b =>
         {
